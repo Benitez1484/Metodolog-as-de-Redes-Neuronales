@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metodologías de Redes Neuronales - Automatización Industrial</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.7;
+            color: #1a1a1a;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-weight: 400;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.98);
+            margin-top: 30px;
+            margin-bottom: 30px;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 40px;
+            background: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%);
+            border-radius: 15px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .logo-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            object-fit: contain;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            font-weight: 800;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            letter-spacing: -0.02em;
+        }
+
+        .header .subtitle {
+            font-size: 1.4rem;
+            opacity: 0.95;
+            font-weight: 500;
+            margin-bottom: 25px;
+        }
+
+        .author-info {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .author-info h3 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .author-info p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            margin: 5px 0;
+        }
+
+        .section {
+            margin-bottom: 50px;
+            padding: 35px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            border: 1px solid #f0f0f0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%);
+        }
+
+        .section h2 {
+            color: #1a1a1a;
+            margin-bottom: 25px;
+            font-size: 2rem;
+            font-weight: 700;
+            border-bottom: 3px solid #f0f0f0;
+            padding-bottom: 15px;
+            letter-spacing: -0.01em;
+        }
+
+        .section h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .neural-network-container {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 40px;
+            margin: 30px 0;
+            overflow-x: auto;
+            border: 2px solid #e0e0e0;
+        }
+
+        .neural-network-svg {
+            width: 100%;
+            min-width: 1000px;
+            height: 500px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .neuron-circle {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .neuron-circle:hover {
+            stroke-width: 4;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+        }
+
+        .connection-line {
+            transition: all 0.3s ease;
+            opacity: 0.6;
+        }
+
+        .connection-line:hover {
+            opacity: 1;
+            stroke-width: 3;
+        }
+
+        .layer-label {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            fill: #2c3e50;
+        }
+
+        .neuron-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+            font-size: 12px;
+            fill: white;
+            text-anchor: middle;
+            dominant-baseline: central;
+        }
+
+        .weight-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            fill: #666;
+            text-anchor: middle;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 25px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+        }
+
+        th, td {
+            padding: 16px 20px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.95rem;
+        }
+
+        th {
+            background: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%);
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+            transform: translateX(5px);
+            transition: all 0.3s ease;
+        }
+
+        .formula {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 2px solid #dee2e6;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
+            color: #2c3e50;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .advantages-disadvantages-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin: 30px 0;
+        }
+
+        .advantages-section, .disadvantages-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            border: 1px solid #f0f0f0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .advantages-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .disadvantages-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .advantages-title {
+            color: #28a745;
+        }
+
+        .disadvantages-title {
+            color: #dc3545;
+        }
+
+        .title-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .advantages-icon {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+
+        .disadvantages-icon {
+            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+            color: white;
+        }
+
+        .advantage-item, .disadvantage-item {
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid transparent;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .advantage-item {
+            border-left-color: #28a745;
+        }
+
+        .advantage-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.15);
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        }
+
+        .disadvantage-item {
+            border-left-color: #dc3545;
+        }
+
+        .disadvantage-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(220, 53, 69, 0.15);
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+        }
+
+        .item-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .item-emoji {
+            font-size: 20px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .item-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #2c3e50;
+        }
+
+        .item-description {
+            color: #5a6c7d;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 968px) {
+            .advantages-disadvantages-container {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 25px 0;
+            box-shadow: 0 8px 25px rgba(33, 147, 176, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .highlight-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23dots)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin: 25px 0;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #f0f0f0;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .epoch-indicator {
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 25px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            margin: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid #f0f0f0;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #2193b0;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 15px;
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .logo-section {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .neural-network-svg {
+                min-width: 800px;
+            }
+            
+            .section {
+                padding: 25px;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .tooltip.visible {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <img src="umg.png" alt="Logo UMG" class="logo-image">
+                    <div>
+                        <h1>Metodologías de Redes Neuronales</h1>
+                        <p class="subtitle">Automatización de Procesos Industriales</p>
+                    </div>
+                </div>
+                
+                <div class="author-info">
+                    <h3>Información Académica</h3>
+                    <p><strong>Estudiante:</strong>Santos Benitez Santiago Simón Hernández</p>
+                    <p><strong>Carné:</strong>2290 21 9304</p>
+                    <p><strong>Curso:</strong> Inteligencia Artificial</p>
+                    <p><strong>Catedrático:</strong>Inge. Eladio Antonio Girón Hernández</p>
+                    <p><strong>Universidad:</strong> Universidad Mariano Gálvez de Guatemala</p>
+                    <p><strong>Fecha:</strong> Junio 2025</p>
+                </div>
+            </div>
+        </div>
+
+        <section class="section animate-on-scroll">
+            <h2>1. Función Objetivo f(O)</h2>
+            <div class="formula">
+                f(O) = minimizar(MSE + λ₁ × Tiempo_Respuesta + λ₂ × Error_Clasificación)
+            </div>
+            <p><strong>Donde:</strong></p>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">MSE</div>
+                    <div class="stat-label">Error Cuadrático Medio</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">λ₁ = 0.3</div>
+                    <div class="stat-label">Peso Tiempo</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">λ₂ = 0.7</div>
+                    <div class="stat-label">Peso Precisión</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section animate-on-scroll">
+            <h2>2. Descripción General del Escenario</h2>
+            <p>El sistema de automatización industrial implementa una red neuronal artificial para controlar robots de clasificación en una línea de producción de alta velocidad. El sistema procesa datos multisensoriales en tiempo real para identificar, clasificar y manipular productos con precisión industrial.</p>
+            
+            <div class="highlight-box">
+                <h3>Arquitectura del Sistema</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">6</div>
+                        <div class="stat-label">Robots Industriales</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">4</div>
+                        <div class="stat-label">Tipos de Productos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">95%</div>
+                        <div class="stat-label">Precisión Objetivo</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">1.8s</div>
+                        <div class="stat-label">Tiempo Máximo</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section animate-on-scroll">
+            <h2>3. Tipo de Aplicación</h2>
+            <h3>Clasificación Multiclase con Procesamiento en Tiempo Real</h3>
+            <p><strong>Justificación Técnica:</strong> El sistema requiere clasificar productos en múltiples categorías basándose en características visuales, peso y dimensiones. Esta es una aplicación clásica de redes neuronales supervisadas con arquitectura feedforward multicapa.</p>
+            
+            <div class="grid">
+                <div class="card">
+                    <h4>🔍 Entrada Multisensorial</h4>
+                    <p>Cámaras RGB-D, sensores de peso, medidores láser de dimensiones</p>
+                </div>
+                <div class="card">
+                    <h4>🧠 Procesamiento Neuronal</h4>
+                    <p>Extracción de características, análisis de patrones, clasificación multiclase</p>
+                </div>
+                <div class="card">
+                    <h4>🎯 Salida de Control</h4>
+                    <p>Clase del producto, coordenadas de destino, comando de manipulación</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section animate-on-scroll">
+            <h2>4. Diagrama de Estructura de Red Neuronal</h2>
+            <div class="neural-network-container">
+                <svg class="neural-network-svg" id="neuralNetworkSVG" viewBox="0 0 1000 500">
+                    <!-- Definiciones de gradientes y filtros -->
+                    <defs>
+                        <linearGradient id="inputGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#ff6b6b;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#ee5a24;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="hiddenGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#4834d4;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#686de0;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="outputGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#00d2d3;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#01a3a4;stop-opacity:1" />
+                        </linearGradient>
+                        <filter id="glow">
+                            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                            <feMerge> 
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+
+                    <!-- Conexiones -->
+                    <g id="connections"></g>
+
+                    <!-- Capa de Entrada -->
+                    <g id="input-layer">
+                        <text x="80" y="40" class="layer-label">Capa de Entrada</text>
+                        <text x="80" y="55" class="layer-label" style="font-size: 12px; fill: #666;">(5 neuronas)</text>
+                        
+                        <circle cx="80" cy="100" r="20" fill="url(#inputGradient)" class="neuron-circle" stroke="#fff" stroke-width="2"/>
+                        <text x="80" y="100" class="neuron-label">RGB</text>
+                        <text x="80" y="130" style="font-size: 10px; fill: #666; text-anchor: middle;">Imagen</text>
+
+                        <circle cx="80" cy="160" r="20" fill="url(#inputGradient)" class="neuron-circle" stroke="#fff" stroke-width="2"/>
+                        <text x="80" y="160" class="neuron-label">W</text>
+                        <text x="80" y="190" style="font-size: 10px; fill: #666; text-anchor: middle;">Peso</text>
+
+                        <circle cx="80" cy="220" r="20" fill="url(#inputGradient)" class="neuron-circle" stroke="#fff" stroke-width="2"/>
+                        <text x="80" y="220" class="neuron-label">X,Y</text>
+                        <text x="80" y="250" style="font-size: 10px; fill: #666; text-anchor: middle;">Posición</text>
+
+                        <circle cx="80" cy="280" r="20" fill="url(#inputGradient)" class="neuron-circle" stroke="#fff" stroke-width="2"/>
+                        <text x="80" y="280" class="neuron-label">D</text>
+                        <text x="80" y="310" style="font-size: 10px; fill: #666; text-anchor: middle;">Dimensión</text>
+
+                        <circle cx="80" cy="340" r="20" fill="url(#inputGradient)" class="neuron-circle" stroke="#fff" stroke-width="2"/>
+                        <text x="80" y="340" class="neuron-label">T</text>
+                        <text x="80" y="370" style="font-size: 10px; fill: #666; text-anchor: middle;">Textura</text>
+                    </g>
+
+                    <!-- Capa Oculta 1 -->
+                    <g id="hidden-layer-1">
+                        <text x="250" y="40" class="layer-label">Capa Oculta 1</text>
+                        <text x="250" y="55" class="layer-label" style="font-size: 12px; fill: #666;">(8 neuronas)</text>
+                        
+                        <circle cx="250" cy="80" r="18" fill="url(#hiddenGradient)" class="neuron-circle" stroke="#fff" stroke-width="2"/>
+                        <text x="250" y="80" class="neuron-label">H1</text>
+
+                        <circle cx="250" cy="120" r="18" fill="url(#hiddenGradient)" class="neuron-circle" stroke="#fff" stroke-width="2"/>
+                        <text x="250" y="120" class="neuron-label">H2</text>
+
+                        <circle cx="250" cy="160" r="18" fill="url(#hiddenGradient)" class="neuron-circle" stroke="#fff" stroke-width="2"/>
+                        <text x="250" y="160" class="neuron-label">H3</text>
+
+                        <circle cx="250" cy="200" r="18" fill="url(#hiddenGradient)" class="neuron-circle" stroke="#fff" stroke-width="2"/>
+                        <text x="250" y="200" class="neuron-label">H4</text>
+
+                        <circle cx="250" cy="240" r="18" fill="url(#hiddenGradient)" class="neuron-circle" stroke="#fff" stroke-width="2"/>
+                        <text x="250" y="240" class="neuron-label">H5</text>
+
+                        <circle cx="250" cy="280" r="18" fill="url(#hiddenGradient)" class="neuron-circle" stroke="#fff" stroke-width="2"/>
+                        <text x="250" y="280" class="neuron-label">H6</text>
+
+                        <circle cx="250" cy="320" r="18" fill="url(#hiddenGradient)" class="neuron-circle" stroke="#fff" stroke-width="2"/>
+                        <text x="250" y="320" class="neuron-label">H7</text>
+
+                        <circle cx="250" cy="360" r="18" fill="url(#hiddenGradient)" class="neuron-circle" stroke="#fff" stroke-width="2"/>
+                        <text x="250" y="360" class="neuron-label">H8</text>
+                    </g>
+
+                    <!-- Capa Oculta 2 -->
+                    <g id="hidden-layer-2">
+                        <text x="420" y="40" class="layer-label">Capa Oculta 2</text>
+                        <text x="420" y="55" class="layer-label" style="font-size: 12px; fill: #666;">(6 neuronas)</text>
+                        
+                        <circle cx="420" cy="100" r="18" fill="url(#hiddenGradient)" class="neuron-circle" stroke="#fff" stroke-width="2"/>
+                        <text x="420" y="100" class="neuron-label">H9</text>
+
+                        <circle cx="420" cy="150" r="18" fill="url(#hiddenGradient)" class="neuron-circle" stroke="#fff" stroke-width="2"/>
+                        <text x="420" y="150" class="neuron-label">H10</text>
+
+                        <circle cx="420" cy="200" r="18" fill="url(#hiddenGradient)" class="neuron-circle" stroke="#fff" stroke-width="2"/>
+                        <text x="420" y="200" class="neuron-label">H11</text>
+
+                        <circle cx="420" cy="250" r="18" fill="url(#hiddenGradient)" class="neuron-circle" stroke="#fff" stroke-width="2"/>
+                        <text x="420" y="250" class="neuron-label">H12</text>
+
+                        <circle cx="420" cy="300" r="18" fill="url(#hiddenGradient)" class="neuron-circle" stroke="#fff" stroke-width="2"/>
+                        <text x="420" y="300" class="neuron-label">H13</text>
+
+                        <circle cx="420" cy="350" r="18" fill="url(#hiddenGradient)" class="neuron-circle" stroke="#fff" stroke-width="2"/>
+                        <text x="420" y="350" class="neuron-label">H14</text>
+                    </g>
+
+                    <!-- Capa Oculta 3 -->
+                    <g id="hidden-layer-3">
+                        <text x="590" y="40" class="layer-label">Capa Oculta 3</text>
+                        <text x="590" y="55" class="layer-label" style="font-size: 12px; fill: #666;">(4 neuronas)</text>
+                        
+                        <circle cx="590" cy="130" r="18" fill="url(#hiddenGradient)" class="neuron-circle" stroke="#fff" stroke-width="2"/>
+                        <text x="590" y="130" class="neuron-label">H15</text>
+
+                        <circle cx="590" cy="190" r="18" fill="url(#hiddenGradient)" class="neuron-circle" stroke="#fff" stroke-width="2"/>
+                        <text x="590" y="190" class="neuron-label">H16</text>
+
+                        <circle cx="590" cy="250" r="18" fill="url(#hiddenGradient)" class="neuron-circle" stroke="#fff" stroke-width="2"/>
+                        <text x="590" y="250" class="neuron-label">H17</text>
+
+                        <circle cx="590" cy="310" r="18" fill="url(#hiddenGradient)" class="neuron-circle" stroke="#fff" stroke-width="2"/>
+                        <text x="590" y="310" class="neuron-label">H18</text>
+                    </g>
+
+                    <!-- Capa de Salida -->
+                    <g id="output-layer">
+                        <text x="760" y="40" class="layer-label">Capa de Salida</text>
+                        <text x="760" y="55" class="layer-label" style="font-size: 12px; fill: #666;">(4 neuronas)</text>
+                        
+                        <circle cx="760" cy="130" r="20" fill="url(#outputGradient)" class="neuron-circle" stroke="#fff" stroke-width="2"/>
+                        <text x="760" y="130" class="neuron-label">A</text>
+                        <text x="760" y="160" style="font-size: 10px; fill: #666; text-anchor: middle;">Producto A</text>
+
+                        <circle cx="760" cy="190" r="20" fill="url(#outputGradient)" class="neuron-circle" stroke="#fff" stroke-width="2"/>
+                        <text x="760" y="190" class="neuron-label">B</text>
+                        <text x="760" y="220" style="font-size: 10px; fill: #666; text-anchor: middle;">Producto B</text>
+
+                        <circle cx="760" cy="250" r="20" fill="url(#outputGradient)" class="neuron-circle" stroke="#fff" stroke-width="2"/>
+                        <text x="760" y="250" class="neuron-label">C</text>
+                        <text x="760" y="280" style="font-size: 10px; fill: #666; text-anchor: middle;">Producto C</text>
+
+                        <circle cx="760" cy="310" r="20" fill="url(#outputGradient)" class="neuron-circle" stroke="#fff" stroke-width="2"/>
+                        <text x="760" y="310" class="neuron-label">R</text>
+                        <text x="760" y="340" style="font-size: 10px; fill: #666; text-anchor: middle;">Rechazado</text>
+                    </g>
+
+                    <!-- Información de activación -->
+                    <g id="activation-info">
+                        <text x="850" y="100" style="font-size: 12px; fill: #666;">Funciones de Activación:</text>
+                        <text x="850" y="120" style="font-size: 11px; fill: #888;">• Entrada: Lineal</text>
+                        <text x="850" y="140" style="font-size: 11px; fill: #888;">• Ocultas: ReLU</text>
+                        <text x="850" y="160" style="font-size: 11px; fill: #888;">• Salida: Softmax</text>
+                        
+                        <text x="850" y="200" style="font-size: 12px; fill: #666;">Parámetros:</text>
+                        <text x="850" y="220" style="font-size: 11px; fill: #888;">• Total conexiones: 156</text>
+                        <text x="850" y="240" style="font-size: 11px; fill: #888;">• Tasa aprendizaje: 0.001</text>
+                        <text x="850" y="260" style="font-size: 11px; fill: #888;">• Épocas: 1000</text>
+                    </g>
+                </svg>
+            </div>
+        </section>
+
+        <section class="section animate-on-scroll">
+            <h2>5. Tipo de Aprendizaje</h2>
+            <h3>Aprendizaje Supervisado con Retropropagación</h3>
+            <p><strong>Justificación:</strong> El sistema utiliza datos etiquetados de productos clasificados correctamente. El algoritmo de retropropagación ajusta los pesos de las conexiones basándose en el error entre la salida predicha y la real.</p>
+            
+            <div class="highlight-box">
+                <h4>Proceso de Entrenamiento Supervisado:</h4>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">7,500</div>
+                        <div class="stat-label">Ejemplos de Entrenamiento</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">1,500</div>
+                        <div class="stat-label">Ejemplos de Validación</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">1,000</div>
+                        <div class="stat-label">Ejemplos de Prueba</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section animate-on-scroll">
+            <h2>6. Conjuntos de Datos para Entrenamiento</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Conjunto</th>
+                            <th>Cantidad</th>
+                            <th>Distribución por Clase</th>
+                            <th>Características</th>
+                            <th>Propósito</th>
+                            <th>Calidad</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Entrenamiento</strong></td>
+                            <td>7,500</td>
+                            <td>A:2000, B:2000, C:2000, R:1500</td>
+                            <td>RGB, Peso, Dim., Textura</td>
+                            <td>Aprendizaje principal</td>
+                            <td>98.5%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Validación</strong></td>
+                            <td>1,500</td>
+                            <td>A:400, B:400, C:400, R:300</td>
+                            <td>RGB, Peso, Dim., Textura</td>
+                            <td>Ajuste hiperparámetros</td>
+                            <td>97.8%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Prueba</strong></td>
+                            <td>1,000</td>
+                            <td>A:250, B:250, C:250, R:250</td>
+                            <td>RGB, Peso, Dim., Textura</td>
+                            <td>Evaluación final</td>
+                            <td>98.9%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tiempo Real</strong></td>
+                            <td>∞</td>
+                            <td>Variable según producción</td>
+                            <td>RGB, Peso, Dim., Textura</td>
+                            <td>Clasificación operativa</td>
+                            <td>95-97%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="section animate-on-scroll">
+            <h2>7. Evolución de Pesos y Bias - Análisis por Épocas</h2>
+            
+            <div class="grid">
+                <div class="card">
+                    <h3>Época 1 <span class="epoch-indicator">Inicialización</span></h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Conexión</th>
+                                    <th>Peso (W)</th>
+                                    <th>Bias (b)</th>
+                                    <th>Gradiente</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>RGB → H1</td>
+                                    <td>0.234</td>
+                                    <td>0.125</td>
+                                    <td>-0.89</td>
+                                </tr>
+                                <tr>
+                                    <td>W → H2</td>
+                                    <td>0.687</td>
+                                    <td>0.203</td>
+                                    <td>-0.45</td>
+                                </tr>
+                                <tr>
+                                    <td>H15 → A</td>
+                                    <td>0.456</td>
+                                    <td>0.178</td>
+                                    <td>-0.67</td>
+                                </tr>
+                                <tr>
+                                    <td>H16 → B</td>
+                                    <td>0.523</td>
+                                    <td>-0.089</td>
+                                    <td>-0.32</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">0.856</div>
+                            <div class="stat-label">Error MSE</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">38%</div>
+                            <div class="stat-label">Precisión</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Época 500 <span class="epoch-indicator">Convergencia</span></h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Conexión</th>
+                                    <th>Peso (W)</th>
+                                    <th>Bias (b)</th>
+                                    <th>Gradiente</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>RGB → H1</td>
+                                    <td>0.789</td>
+                                    <td>0.067</td>
+                                    <td>-0.12</td>
+                                </tr>
+                                <tr>
+                                    <td>W → H2</td>
+                                    <td>0.834</td>
+                                    <td>-0.156</td>
+                                    <td>-0.08</td>
+                                </tr>
+                                <tr>
+                                    <td>H15 → A</td>
+                                    <td>0.923</td>
+                                    <td>0.234</td>
+                                    <td>-0.04</td>
+                                </tr>
+                                <tr>
+                                    <td>H16 → B</td>
+                                    <td>0.867</td>
+                                    <td>-0.298</td>
+                                    <td>-0.06</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">0.189</div>
+                            <div class="stat-label">Error MSE</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">87%</div>
+                            <div class="stat-label">Precisión</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Época 1000 <span class="epoch-indicator">Optimizado</span></h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Conexión</th>
+                                    <th>Peso (W)</th>
+                                    <th>Bias (b)</th>
+                                    <th>Gradiente</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>RGB → H1</td>
+                                    <td>0.912</td>
+                                    <td>0.023</td>
+                                    <td>-0.001</td>
+                                </tr>
+                                <tr>
+                                    <td>W → H2</td>
+                                    <td>0.956</td>
+                                    <td>-0.234</td>
+                                    <td>-0.002</td>
+                                </tr>
+                                <tr>
+                                    <td>H15 → A</td>
+                                    <td>0.987</td>
+                                    <td>0.345</td>
+                                    <td>-0.001</td>
+                                </tr>
+                                <tr>
+                                    <td>H16 → B</td>
+                                    <td>0.945</td>
+                                    <td>-0.456</td>
+                                    <td>-0.003</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">0.067</div>
+                            <div class="stat-label">Error MSE</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">96%</div>
+                            <div class="stat-label">Precisión</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h4>Análisis del Bias Negativo (-0.456) en H16 → B:</h4>
+                <p>El bias fuertemente negativo indica que la neurona B requiere un umbral muy alto para activarse. Esto es crucial para productos tipo B que necesitan características muy específicas (peso exacto, dimensiones precisas). El bias negativo evita clasificaciones erróneas cuando las características están en el límite, mejorando la especificidad del 78% al 96%.</p>
+            </div>
+        </section>
+
+        <section class="section animate-on-scroll">
+            <h2>8. Parámetros de Aprendizaje por Fase</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fase de Entrenamiento</th>
+                            <th>Épocas</th>
+                            <th>Rango α</th>
+                            <th>Valor α Óptimo</th>
+                            <th>Momentum</th>
+                            <th>Decay Rate</th>
+                            <th>Convergencia</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Fase Initial</strong></td>
+                            <td>1-200</td>
+                            <td>0.1 - 0.5</td>
+                            <td>0.3</td>
+                            <td>0.9</td>
+                            <td>0.95</td>
+                            <td>Lenta pero estable</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Fase Media</strong></td>
+                            <td>201-600</td>
+                            <td>0.05 - 0.2</td>
+                            <td>0.1</td>
+                            <td>0.85</td>
+                            <td>0.98</td>
+                            <td>Acelerada</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Fase Final</strong></td>
+                            <td>601-1000</td>
+                            <td>0.001 - 0.05</td>
+                            <td>0.01</td>
+                            <td>0.7</td>
+                            <td>0.99</td>
+                            <td>Refinamiento fino</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="section animate-on-scroll">
+            <h2>9. Análisis de Ventajas y Desventajas</h2>
+            
+            <div class="advantages-disadvantages-container">
+                <div class="advantages-section">
+                    <h3 class="section-title advantages-title">
+                        <div class="title-icon advantages-icon">✓</div>
+                        Ventajas del Sistema
+                    </h3>
+                    
+                    <div class="advantage-item">
+                        <div class="item-header">
+                            <div class="item-emoji">🎯</div>
+                            <div class="item-title">Alta Precisión</div>
+                        </div>
+                        <div class="item-description">
+                            Alcanza 96% de precisión en clasificación multiclase con mínimos falsos positivos, superando estándares industriales internacionales.
+                        </div>
+                    </div>
+
+                    <div class="advantage-item">
+                        <div class="item-header">
+                            <div class="item-emoji">⚡</div>
+                            <div class="item-title">Velocidad Óptima</div>
+                        </div>
+                        <div class="item-description">
+                            Procesamiento en 1.2 segundos promedio, superando el objetivo de 1.8s y garantizando flujo continuo de producción.
+                        </div>
+                    </div>
+
+                    <div class="advantage-item">
+                        <div class="item-header">
+                            <div class="item-emoji">🔄</div>
+                            <div class="item-title">Adaptabilidad</div>
+                        </div>
+                        <div class="item-description">
+                            Capacidad de reentrenamiento para nuevos productos sin requerir cambios en la arquitectura base del sistema.
+                        </div>
+                    </div>
+
+                    <div class="advantage-item">
+                        <div class="item-header">
+                            <div class="item-emoji">🛡️</div>
+                            <div class="item-title">Robustez Operacional</div>
+                        </div>
+                        <div class="item-description">
+                            Manejo efectivo de variaciones en iluminación, posición y orientación de productos en el entorno industrial.
+                        </div>
+                    </div>
+
+                    <div class="advantage-item">
+                        <div class="item-header">
+                            <div class="item-emoji">📊</div>
+                            <div class="item-title">Escalabilidad</div>
+                        </div>
+                        <div class="item-description">
+                            Arquitectura modular que permite expansión a más categorías de productos y líneas de producción.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="disadvantages-section">
+                    <h3 class="section-title disadvantages-title">
+                        <div class="title-icon disadvantages-icon">✕</div>
+                        Desventajas del Sistema
+                    </h3>
+                    
+                    <div class="disadvantage-item">
+                        <div class="item-header">
+                            <div class="item-emoji">💾</div>
+                            <div class="item-title">Dependencia de Datos</div>
+                        </div>
+                        <div class="item-description">
+                            Requiere 10,000+ ejemplos etiquetados de alta calidad para entrenamiento inicial y reentrenamiento periódico.
+                        </div>
+                    </div>
+
+                    <div class="disadvantage-item">
+                        <div class="item-header">
+                            <div class="item-emoji">🔍</div>
+                            <div class="item-title">Transparencia Limitada</div>
+                        </div>
+                        <div class="item-description">
+                            Dificultad para explicar decisiones específicas a operadores y auditores de calidad (efecto "caja negra").
+                        </div>
+                    </div>
+
+                    <div class="disadvantage-item">
+                        <div class="item-header">
+                            <div class="item-emoji">⚙️</div>
+                            <div class="item-title">Costo Computacional</div>
+                        </div>
+                        <div class="item-description">
+                            Hardware especializado (GPU) necesario para entrenamiento y inferencia rápida, incrementando inversión inicial.
+                        </div>
+                    </div>
+
+                    <div class="disadvantage-item">
+                        <div class="item-header">
+                            <div class="item-emoji">🔧</div>
+                            <div class="item-title">Mantenimiento Continuo</div>
+                        </div>
+                        <div class="item-description">
+                            Degradación gradual de precisión requiere reentrenamiento especializado cada 6 meses con personal técnico.
+                        </div>
+                    </div>
+
+                    <div class="disadvantage-item">
+                        <div class="item-header">
+                            <div class="item-emoji">🌐</div>
+                            <div class="item-title">Sensibilidad Ambiental</div>
+                        </div>
+                        <div class="item-description">
+                            Cambios significativos en iluminación o condiciones ambientales pueden afectar el rendimiento del sistema.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section animate-on-scroll">
+            <h2>10. Conclusión General y Entregables</h2>
+            <div class="highlight-box">
+                <h3>📋 Entregables Formalizados del Desarrollo</h3>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">96%</div>
+                        <div class="stat-label">Precisión Final</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">1.2s</div>
+                        <div class="stat-label">Tiempo Promedio</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">156</div>
+                        <div class="stat-label">Conexiones Totales</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">99.2%</div>
+                        <div class="stat-label">Disponibilidad</div>
+                    </div>
+                </div>
+
+                <h4>🎯 Logros Técnicos Principales:</h4>
+                <ul style="padding-left: 20px; margin-top: 15px;">
+                    <li><strong>Arquitectura Optimizada:</strong> Red neuronal multicapa (5-8-6-4-4) con 27 neuronas totales y función de activación híbrida</li>
+                    <li><strong>Función Objetivo Balanceada:</strong> Optimización simultánea de precisión y velocidad con factores λ₁=0.3, λ₂=0.7</li>
+                    <li><strong>Entrenamiento Supervisado Robusto:</strong> Estrategia de aprendizaje adaptativo con 3 fases diferenciadas</li>
+                    <li><strong>Gestión Avanzada de Bias:</strong> Implementación de bias negativo estratégico para mejorar especificidad</li>
+                    <li><strong>Validación Cruzada:</strong> Protocolo de evaluación con conjuntos independientes y métricas de rendimiento continuo</li>
+                </ul>
+
+                <h4>🚀 Impacto en Automatización Industrial:</h4>
+                <p style="margin-top: 15px;">La implementación exitosa de esta metodología de redes neuronales representa un avance significativo en la automatización industrial inteligente. El sistema desarrollado no solo cumple sino que supera los objetivos establecidos, demostrando la viabilidad de la inteligencia artificial en entornos de producción críticos. La arquitectura diseñada establece un precedente para futuras implementaciones en procesos industriales similares, con potencial de replicación y escalabilidad a nivel corporativo.</p>
+
+                <h4>📈 Proyección y Sostenibilidad:</h4>
+                <p style="margin-top: 15px;">El sistema garantiza una operación sostenible con protocolos de mantenimiento predictivo, actualización incremental de conocimiento y adaptación automática a nuevas variantes de productos, asegurando la inversión tecnológica a largo plazo.</p>
+            </div>
+        </section>
+
+        <div style="text-align: center; padding: 30px; color: #666; border-top: 2px solid #f0f0f0; margin-top: 40px;">
+            <p style="font-size: 0.9rem;"><strong>Universidad Mariano Gálvez de Guatemala</strong></p>
+            <p style="font-size: 0.8rem;">Curso de Inteligencia Artificial - Metodologías de Redes Neuronales</p>
+            <p style="font-size: 0.8rem;">© 2025 - Benitez Simón</p>
+        </div>
+    </div>
+
+    <script>
+        // Crear conexiones dinámicas en el diagrama SVG
+        function createNeuralConnections() {
+            const svg = document.getElementById('neuralNetworkSVG');
+            const connectionsGroup = document.getElementById('connections');
+            
+            // Definir las posiciones de las neuronas
+            const layers = [
+                {x: 80, neurons: [100, 160, 220, 280, 340]},
+                {x: 250, neurons: [80, 120, 160, 200, 240, 280, 320, 360]},
+                {x: 420, neurons: [100, 150, 200, 250, 300, 350]},
+                {x: 590, neurons: [130, 190, 250, 310]},
+                {x: 760, neurons: [130, 190, 250, 310]}
+            ];
+
+            // Pesos de ejemplo para mostrar en hover
+            const weights = [
+                [0.23, 0.45, 0.67, 0.89, 0.34],
+                [0.56, 0.78, 0.91, 0.23, 0.45],
+                [0.67, 0.89, 0.12, 0.34],
+                [0.78, 0.91, 0.23, 0.45]
+            ];
+
+            // Crear conexiones entre capas adyacentes
+            for (let layerIndex = 0; layerIndex < layers.length - 1; layerIndex++) {
+                const currentLayer = layers[layerIndex];
+                const nextLayer = layers[layerIndex + 1];
+
+                currentLayer.neurons.forEach((startY, startIndex) => {
+                    nextLayer.neurons.forEach((endY, endIndex) => {
+                        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                        line.setAttribute('x1', currentLayer.x + 20);
+                        line.setAttribute('y1', startY);
+                        line.setAttribute('x2', nextLayer.x - 20);
+                        line.setAttribute('y2', endY);
+                        line.setAttribute('stroke', '#ddd');
+                        line.setAttribute('stroke-width', '1.5');
+                        line.setAttribute('class', 'connection-line');
+                        line.style.opacity = '0.4';
+
+                        // Agregar peso como atributo para mostrar en hover
+                        const weight = weights[layerIndex] ? weights[layerIndex][startIndex % weights[layerIndex].length] : 0.5;
+                        line.setAttribute('data-weight', weight.toFixed(3));
+
+                        // Eventos de hover para mostrar pesos
+                        line.addEventListener('mouseenter', function() {
+                            this.style.opacity = '1';
+                            this.setAttribute('stroke', '#2193b0');
+                            this.setAttribute('stroke-width', '2.5');
+                            
+                            // Mostrar peso en tooltip
+                            showTooltip(event, `Peso: ${this.getAttribute('data-weight')}`);
+                        });
+
+                        line.addEventListener('mouseleave', function() {
+                            this.style.opacity = '0.4';
+                            this.setAttribute('stroke', '#ddd');
+                            this.setAttribute('stroke-width', '1.5');
+                            hideTooltip();
+                        });
+
+                        connectionsGroup.appendChild(line);
+                    });
+                });
+            }
+
+            // Agregar eventos a las neuronas
+            const neurons = svg.querySelectorAll('.neuron-circle');
+            neurons.forEach((neuron, index) => {
+                neuron.addEventListener('mouseenter', function() {
+                    this.style.filter = 'url(#glow)';
+                    this.style.transform = 'scale(1.1)';
+                });
+
+                neuron.addEventListener('mouseleave', function() {
+                    this.style.filter = 'none';
+                    this.style.transform = 'scale(1)';
+                });
+            });
+        }
+
+        // Función para mostrar tooltip
+        function showTooltip(event, text) {
+            let tooltip = document.querySelector('.tooltip');
+            if (!tooltip) {
+                tooltip = document.createElement('div');
+                tooltip.className = 'tooltip';
+                document.body.appendChild(tooltip);
+            }
+            
+            tooltip.textContent = text;
+            tooltip.style.left = event.pageX + 10 + 'px';
+            tooltip.style.top = event.pageY - 30 + 'px';
+            tooltip.classList.add('visible');
+        }
+
+        // Función para ocultar tooltip
+        function hideTooltip() {
+            const tooltip = document.querySelector('.tooltip');
+            if (tooltip) {
+                tooltip.classList.remove('visible');
+            }
+        }
+
+        // Animaciones de entrada
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, index * 200);
+                }
+            });
+        }, observerOptions);
+
+        // Observar elementos para animación
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Efectos en tablas
+        document.querySelectorAll('table tr').forEach(row => {
+            row.addEventListener('mouseenter', () => {
+                row.style.backgroundColor = '#f0f8ff';
+                row.style.transform = 'translateX(5px)';
+            });
+            
+            row.addEventListener('mouseleave', () => {
+                row.style.backgroundColor = '';
+                row.style.transform = 'translateX(0)';
+            });
+        });
+
+        // Inicializar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(createNeuralConnections, 500);
+        });
+
+        // Efecto parallax suave en el header
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const header = document.querySelector('.header');
+            if (header) {
+                const rate = scrolled * -0.3;
+                header.style.transform = `translateY(${rate}px)`;
+            }
+        });
+    </script>
+</body>
+</html>
